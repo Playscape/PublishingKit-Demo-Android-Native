@@ -150,19 +150,19 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void displayIntersitial() {
-//        IntersitialAd.displayInterstitialAd();
+       IntersitialAd.displayInterstitialAd(2, "main-menu");
     }
 
     private void displayBannerAd() {
-        // BannerAd.displayBannerAd(0, "top-middle");
+        BannerAd.displayBannerAd(0, "top-middle");
     }
 
     private void hideBanner() {
-        // BannerAd.hideBannerAd();
+        BannerAd.hideBannerAd();
     }
 
     private void displayVideo() {
-        // VideoAd.displayVideoAd(0, "video");
+        VideoAd.displayVideoAd(0, "video");
     }
 
     private void enableAds() {
