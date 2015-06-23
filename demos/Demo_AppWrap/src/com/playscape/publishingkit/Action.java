@@ -27,6 +27,8 @@ public enum Action {
     DisplayBanner("Display Banner"),
     HideBanner("Hide Banner"),
     DisplayVideo("Display Video"),
+    EnableAds("Enable Ads"),
+    DisableAds("Disable Ads"),
 
     ;
     Action(String name) {
