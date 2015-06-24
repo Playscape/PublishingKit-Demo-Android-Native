@@ -5,17 +5,33 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
+import com.playscape.api.ads.AdsDisplayingManager;
+import com.playscape.api.ads.BannerAd;
+import com.playscape.api.ads.IntersitialAd;
+import com.playscape.api.ads.VideoAd;
+import com.playscape.api.report.Report;
 import com.playscape.exchange.ExchangeManager;
+import com.playscape.utils.L;
 import com.playscape.utils.MoDi;
-import com.playscape.api.ads.*;
-import com.playscape.api.report.*;
 
+import java.util.ArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class PlayscapeDemoActivity extends Activity {
 
+    private static final String TAG = PlayscapeDemoActivity.class.getSimpleName();
+
+    // listview with items for calling API methods
     private ListView listView;
+
+    // we'll use it just for report events with different values
+    private static int amount = 0;
+
+    // its needed for arrays with parameters for reporting
+    private int size = 3;
+
+    // flow id for Flow reporting
+    private String mFlowId = "Quests";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +66,7 @@ public class PlayscapeDemoActivity extends Activity {
                 reportWalletOperation();
                 break;
             case ReportLevelStarted:
-                reportLevelSrarted();
+                reportLevelStarted();
                 break;
             case ReportLevelCompleted:
                 reportLevelCompleted();
@@ -109,40 +125,63 @@ public class PlayscapeDemoActivity extends Activity {
 
     }
 
-    private void reportLevelSrarted() {
-
+    private void reportLevelStarted() {
+        Report.reportLevelStarted("level1", size, getKeysArray(size), getDoubleValueArray(size));
     }
 
     private void reportLevelCompleted() {
-
+        Report.reportLevelCompleted("level1", size, getKeysArray(size), getDoubleValueArray(size));
     }
 
     private void reportLevelFailed() {
-
+        Report.reportLevelFailed("level1", size, getKeysArray(size), getDoubleValueArray(size));
     }
 
     private void registerFlow() {
+        FlowStep[] steps = FlowStep.values();
+        String[] stepsStr = new String[steps.length];
+        int[] values = new int[steps.length];
 
+        for (FlowStep step : steps) {
+            stepsStr[step.ordinal()] = step.getName();
+            values[step.ordinal()] = step.ordinal();
+        }
+
+        Report.registerFlow(mFlowId, size, stepsStr, values);
     }
 
     private void startNewFlow() {
-
+        // String type
+        Report.startNewFlow(mFlowId);
     }
 
     private void reportFlowStep() {
+        FlowStep step = FlowStep.SaveTheButcher;
 
+        int size = step.getDetailsValues().size();
+        String[] stepsStr = new String[size];
+        double[] values = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            stepsStr[i] = step.getDetailsNames().get(i);
+            values[i] = step.getDetailsValues().get(i);
+        }
+        Report.reportFlowStep(mFlowId, step.getName(), step.getStatus(), stepsStr.length, stepsStr, values);
     }
 
     private void setCustomVariable() {
-
+        amount++;
+        Report.setCustomVariable("NewCustomVariableKey_" + amount, "NewCustomVariableValue_" + amount);
     }
 
     private void getCustomVariable() {
-
+        String variable = Report.getCustomVariable("NewCustomVariableKey_" + amount);
+        L.d("custom variable: " + variable);
     }
 
     private void reportEvent() {
-
+        amount++;
+        Report.reportEvent("custom_event_" + amount);
     }
 
     private void showPlayscapecatalog() {
@@ -150,7 +189,7 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void displayIntersitial() {
-       IntersitialAd.displayInterstitialAd(2, "main-menu");
+        IntersitialAd.displayInterstitialAd(2, "main-menu");
     }
 
     private void displayBannerAd() {
@@ -171,5 +210,71 @@ public class PlayscapeDemoActivity extends Activity {
 
     private void disableAds() {
         AdsDisplayingManager.disableAds();
+    }
+
+    private double[] getDoubleValueArray(int size) {
+        double[] values = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            values[i] = i;
+        }
+
+        return values;
+    }
+
+    private String[] getKeysArray(int size) {
+        String[] keys = new String[size];
+
+        for (int i = 0; i < size; i++) {
+            keys[i] = "Game_Mode_" + i;
+        }
+
+        return keys;
+    }
+
+    private enum FlowStep {
+        SaveTheButcher("SaveTheButcher", "noob", 5),
+        SlayDeckardPayne("SlayDeckardPayne", "master", 2),
+        EscapeFromHell("EscapeFromHell", "noob", 0.25f),
+        ;
+        private String mName;
+        private String mStatus;
+
+        private ArrayList<String> mDetailsNames;
+        private ArrayList<Integer> mDetailsValues;
+
+        FlowStep(String name, String status, float x) {
+            mName = name;
+            mStatus = status;
+
+            mDetailsNames = new ArrayList<String>();
+            mDetailsValues = new ArrayList<Integer>();
+
+            mDetailsNames.add("xp");
+            mDetailsValues.add((int) (1000 * x));
+
+            mDetailsNames.add("gold");
+            mDetailsValues.add((int) (50 * x));
+
+            mDetailsNames.add("souls");
+            mDetailsValues.add((int) (15 * x));
+
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+        public String getStatus() {
+            return mStatus;
+        }
+
+        public ArrayList<String> getDetailsNames() {
+            return mDetailsNames;
+        }
+
+        public ArrayList<Integer> getDetailsValues() {
+            return mDetailsValues;
+        }
     }
 }
