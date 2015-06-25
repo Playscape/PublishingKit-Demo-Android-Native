@@ -17,6 +17,12 @@ import com.playscape.utils.MoDi;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 
+/**
+ * Created by VladimirM on 6/19/15.
+ *
+ * This class shows how to use Playscape Exchange API
+ *
+ */
 public class PlayscapeDemoActivity extends Activity {
 
     private static final String TAG = PlayscapeDemoActivity.class.getSimpleName();
@@ -121,8 +127,15 @@ public class PlayscapeDemoActivity extends Activity {
         }
     }
 
-    private void reportWalletOperation() {
+    /* ************** Wrappers for Report, BannerAd, IntersitialAd, VideoAd,
+       ************** and AdsDisplayingManager classes */
 
+    private void reportWalletOperation() {
+        int walletOperation = 0; // Deposit = 0; Withdraw = 1
+        int walletResult = 0; // Success = 0, Failed = 1, Cancel = 2
+        String dealType = "SingleItem";
+        Report.reportWalletOperation(walletOperation, dealType, "transactionID", 50.0d, "currency",
+                    "source", "flow", "step", "item", walletResult, "reason");
     }
 
     private void reportLevelStarted() {
@@ -151,7 +164,6 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void startNewFlow() {
-        // String type
         Report.startNewFlow(mFlowId);
     }
 
@@ -189,19 +201,19 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void displayIntersitial() {
-        IntersitialAd.displayInterstitialAd(2, "main-menu");
+        IntersitialAd.getInstnace().displayInterstitialAd(2, "main-menu");
     }
 
     private void displayBannerAd() {
-        BannerAd.displayBannerAd(0, "top-middle");
+        BannerAd.getInstnace().displayBannerAd(0, "top-middle");
     }
 
     private void hideBanner() {
-        BannerAd.hideBannerAd();
+        BannerAd.getInstnace().hideBannerAd();
     }
 
     private void displayVideo() {
-        VideoAd.displayVideoAd(0, "video");
+        VideoAd.getInstnace().displayVideoAd(0, "video");
     }
 
     private void enableAds() {
@@ -232,6 +244,7 @@ public class PlayscapeDemoActivity extends Activity {
         return keys;
     }
 
+    // Helper for testing Reporting Custom Flows
     private enum FlowStep {
         SaveTheButcher("SaveTheButcher", "noob", 5),
         SlayDeckardPayne("SlayDeckardPayne", "master", 2),
