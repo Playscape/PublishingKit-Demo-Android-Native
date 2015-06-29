@@ -23,7 +23,7 @@
     <property name="out.jar.file" location="bin/aspect_classes.jar" />
     <property name="default.application.class" value="com.playscape.playscapeapp.PlayscapeApp"/>
 
-    <property name="publishigkit.dir" location="../../PlayscapePubkitAndroid" />
+    <property name="publishigkit.dir" location="../PlayscapePubkitAndroid" />
     <property name="libproject.dir" location="${publishigkit.dir}/libproject" />
     <property name="publishigkit.assets" location="${libproject.dir}/assets" />
     <property name="target.assets" location="./assets" />
@@ -64,7 +64,7 @@
 
     <path id="class.path">
         <pathelement path="${classpath}"/>
-        <fileset dir="../../PlayscapePubKitAndroid/build/tools/">
+        <fileset dir="../PlayscapePubKitAndroid/build/tools/">
             <include name="xmltask.jar"/>
             <include name="com.oopsconsultancy.xmltask-1.16.jar"/>
         </fileset>
@@ -301,10 +301,10 @@
         <sequential>
             <pathconvert property="expanded.main.class.path" refid="out.dex.jar.input.ref"/>
 
-            <property name="classpath.aspects.aspectjtools" location="../../PlayscapePubKitAndroid/build/tools/aspectsj/aspectjtools.jar"/>
-            <property name="classpath.aspects.aspectjrt" location="../../PlayscapePubKitAndroid/build/tools/aspectsj/aspectjrt.jar"/>
+            <property name="classpath.aspects.aspectjtools" location="../PlayscapePubKitAndroid/build/tools/aspectsj/aspectjtools.jar"/>
+            <property name="classpath.aspects.aspectjrt" location="../PlayscapePubKitAndroid/build/tools/aspectsj/aspectjrt.jar"/>
             <property name="classpath.playservices.project" location="${sdk.dir}/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-servies.jar"/>
-            <property name="patcher.aspectpath" location="../../PlayscapePubKitAndroid/build/tools/playscape_lifecycle.jar"/>
+            <property name="patcher.aspectpath" location="../PlayscapePubKitAndroid/build/tools/playscape_lifecycle.jar"/>
 
             <exec executable="java">
                 <arg value="-classpath"/>
