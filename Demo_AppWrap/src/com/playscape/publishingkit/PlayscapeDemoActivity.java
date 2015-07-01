@@ -44,10 +44,6 @@ public class PlayscapeDemoActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        ExchangeManager.getInstance().init(getApplication(),
-                getApplicationContext(),
-                MoDi.getInjector(this).getInstance(ScheduledExecutorService.class));
-
         listView = (ListView) findViewById(R.id.list);
 
         ListViewAdapter adapter = new ListViewAdapter(this, Action.values());
