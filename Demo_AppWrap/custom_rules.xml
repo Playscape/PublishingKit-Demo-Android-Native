@@ -4,16 +4,72 @@
     <target name="-pre-compile">
         <!-- adience jar in thirdparty_jars to classpath -->
 
-        <echo>ORIGINAL jars.path : ${toString:project.all.jars.path}</echo>
-        <path id="project.all.jars.path.hacked">
-            <path path="${toString:project.all.jars.path}"/>
-            <fileset dir="libs">
-                <include name="*.jar"/>
-            </fileset>
-        </path>
+        <!-- This hack converts the Path object ${project.all.jars} into a string and excluding ads jars from path -->
+        <property name="project.all.jars.path.orig" value="${toString:project.all.jars.path}"/>
+        <script language="javascript" classpath="${script.classpath}"> <![CDATA[
+          origpath = String(project.getProperty("project.all.jars.path.orig"));
 
+          if (project.getProperty("playscape.ads.enabled") == "false") {
+            var echo = project.createTask("echo");
+            echo.setMessage("Excluding ads...");
+            echo.perform();
+
+            // Returns a new string in which all occurrences of a target string in the receiver are replaced by another given string.
+            //
+            // @string - target string
+            // @find - the string to replace
+            // @replace - The string with which to replace @find.
+            function replaceAll(string, find, replace) {
+              return string.replace(new RegExp(find, 'g'), replace);
+            }
+
+            //convert wildcard to regex patterns
+            //
+            // @pattern - The wildcard which should be converted to regex pattern
+            function wildcardToPattern(pattern) {
+              pattern = replaceAll(pattern, "\\*", ".*");
+              pattern = replaceAll(pattern, "\\?", ".");
+
+              return "^" + pattern + "$";
+            }
+
+            wildcards = [
+              wildcardToPattern("*com.jirbo*"),
+              wildcardToPattern("*com.millennialmedia.*"),
+              wildcardToPattern("*com.chartboost.*"),
+              wildcardToPattern("*com.startapp*"),
+              wildcardToPattern("*com.vungle*"),
+              wildcardToPattern("*javax.inject*"),
+              wildcardToPattern("*com.nineoldandroids*"),
+              wildcardToPattern("*dagger*")
+            ];
+
+            pathes = origpath.split(":");
+            for (i = 0, count = pathes.length; i < count; i++) {
+              pathItem = pathes[i];
+
+              for (j = 0, length = wildcards.length; j < length; j++) {
+                matches = pathItem.match(wildcards[j]);
+                match = matches === null ? false : true;
+                if (match) {
+                  origpath = replaceAll(origpath, pathItem, "");
+                }
+              }
+            }
+
+            project.setProperty("project.all.jars.path.hacked", origpath);
+
+            echo.setMessage("Jar path after excluding => " + origpath);
+            echo.perform();
+          } else {
+            project.setProperty("project.all.jars.path.hacked", origpath);
+          }
+
+        ]]> </script>
+
+        <!-- Redefine project.all.jars.path before -compile executes -->
         <path id="project.all.jars.path">
-            <path path="${toString:project.all.jars.path.hacked}"/>
+            <path path="${project.all.jars.path.hacked}" />
         </path>
         <echo>HACKED jars.path : ${toString:project.all.jars.path}</echo>
 
@@ -23,7 +79,7 @@
     <property name="out.jar.file" location="bin/aspect_classes.jar" />
     <property name="default.application.class" value="com.playscape.playscapeapp.PlayscapeApp"/>
 
-    <property name="publishigkit.dir" location="../../PlayscapePubkitAndroid" />
+    <property name="publishigkit.dir" location="../PlayscapePubkitAndroid" />
     <property name="libproject.dir" location="${publishigkit.dir}/libproject" />
     <property name="publishigkit.assets" location="${libproject.dir}/assets" />
     <property name="target.assets" location="./assets" />
@@ -64,7 +120,7 @@
 
     <path id="class.path">
         <pathelement path="${classpath}"/>
-        <fileset dir="../../PlayscapePubKitAndroid/build/tools/">
+        <fileset dir="../PlayscapePubKitAndroid/build/tools/">
             <include name="xmltask.jar"/>
             <include name="com.oopsconsultancy.xmltask-1.16.jar"/>
         </fileset>
@@ -104,11 +160,11 @@
 
                 var echo = PublishingKit_Demo_Android_Native.createTask("echo");
 
-                var full_api_key = PublishingKit_Demo_Android_Native.getProperty("api.key");
+                var full_api_key = PublishingKit_Demo_Android_Native.getProperty("playscape.api.key");
 
                 var base_url = "https://playscape-backend-prod.appspot.com";
-                if(PublishingKit_Demo_Android_Native.getProperty("base.url")) {
-                base_url = PublishingKit_Demo_Android_Native.getProperty("base.url");
+                if(PublishingKit_Demo_Android_Native.getProperty("playscape.base.url")) {
+                    base_url = PublishingKit_Demo_Android_Native.getProperty("playscape.base.url");
                 }
 
                 if(full_api_key) {
@@ -301,10 +357,10 @@
         <sequential>
             <pathconvert property="expanded.main.class.path" refid="out.dex.jar.input.ref"/>
 
-            <property name="classpath.aspects.aspectjtools" location="../../PlayscapePubKitAndroid/build/tools/aspectsj/aspectjtools.jar"/>
-            <property name="classpath.aspects.aspectjrt" location="../../PlayscapePubKitAndroid/build/tools/aspectsj/aspectjrt.jar"/>
+            <property name="classpath.aspects.aspectjtools" location="../PlayscapePubKitAndroid/build/tools/aspectsj/aspectjtools.jar"/>
+            <property name="classpath.aspects.aspectjrt" location="../PlayscapePubKitAndroid/build/tools/aspectsj/aspectjrt.jar"/>
             <property name="classpath.playservices.project" location="${sdk.dir}/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-servies.jar"/>
-            <property name="patcher.aspectpath" location="../../PlayscapePubKitAndroid/build/tools/playscape_lifecycle.jar"/>
+            <property name="patcher.aspectpath" location="../PlayscapePubKitAndroid/build/tools/playscape_lifecycle.jar"/>
 
             <exec executable="java">
                 <arg value="-classpath"/>
