@@ -92,6 +92,16 @@ public class PlayscapeDemoActivity extends Activity {
             case ReportEvent:
                 reportEvent();
                 break;
+// **** Rate Us
+            case RatingDialogShow:
+                reportDialogShow();
+                break;
+            case RatingDialogYes:
+                reportRatingDialogYes();
+                break;
+            case RatingDialogNo:
+                reportRatingDialogNo();
+                break;
 // ************** Playscape Exchange Catalog **************
             case ShowPlayscapeCatalog:
                 showPlayscapecatalog();
@@ -191,6 +201,18 @@ public class PlayscapeDemoActivity extends Activity {
     private void reportEvent() {
         amount++;
         Report.reportEvent("custom_event_" + amount);
+    }
+
+    private void reportDialogShow() {
+        Report.reportRatingDialogShow();
+    }
+
+    private void reportRatingDialogYes() {
+        Report.reportRatingDialogYes();
+    }
+
+    private void reportRatingDialogNo() {
+        Report.reportRatingDialogNo();
     }
 
     private void showPlayscapecatalog() {

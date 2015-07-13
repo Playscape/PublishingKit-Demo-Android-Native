@@ -29,7 +29,9 @@ public enum Action {
     DisplayVideo("Display Video"),
     EnableAds("Enable Ads"),
     DisableAds("Disable Ads"),
-
+    RatingDialogShow("Rating Dialog Show"),
+    RatingDialogYes("Rating Dialog Yes"),
+    RatingDialogNo("Rating Dialog No"),
     ;
     Action(String name) {
         this.mName = name;
