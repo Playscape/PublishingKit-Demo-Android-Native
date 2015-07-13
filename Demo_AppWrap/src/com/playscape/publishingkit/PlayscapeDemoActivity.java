@@ -5,23 +5,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.playscape.api.ads.AdsDisplayingManager;
-import com.playscape.api.ads.BannerAd;
-import com.playscape.api.ads.IntersitialAd;
-import com.playscape.api.ads.VideoAd;
+import com.playscape.api.ads.*;
+import com.playscape.api.exchange.ExchangeManager;
 import com.playscape.api.report.Report;
-import com.playscape.exchange.ExchangeManager;
 import com.playscape.utils.L;
-import com.playscape.utils.MoDi;
 
-import java.util.ArrayList;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created by VladimirM on 6/19/15.
- *
+ * <p/>
  * This class shows how to use Playscape Exchange API
- *
  */
 public class PlayscapeDemoActivity extends Activity {
 
@@ -131,32 +126,40 @@ public class PlayscapeDemoActivity extends Activity {
         int walletResult = 0; // Success = 0, Failed = 1, Cancel = 2
         String dealType = "SingleItem";
         Report.reportWalletOperation(walletOperation, dealType, "transactionID", 50.0d, "currency",
-                    "source", "flow", "step", "item", walletResult, "reason");
+                "source", "flow", "step", "item", walletResult, "reason");
     }
 
     private void reportLevelStarted() {
-        Report.reportLevelStarted("level1", size, getKeysArray(size), getDoubleValueArray(size));
+        HashMap<String, Double> map = new HashMap<String, Double>();
+        for (int i = 0; i < size; i++) {
+            map.put("Game_Mode_" + i, (double) i);
+        }
+        Report.reportLevelStarted("level1", map);
     }
 
     private void reportLevelCompleted() {
-        Report.reportLevelCompleted("level1", size, getKeysArray(size), getDoubleValueArray(size));
+        HashMap<String, Double> map = new HashMap<String, Double>();
+        for (int i = 0; i < size; i++) {
+            map.put("Game_Mode_" + i, (double) i);
+        }
+        Report.reportLevelCompleted("level1", map);
     }
 
     private void reportLevelFailed() {
-        Report.reportLevelFailed("level1", size, getKeysArray(size), getDoubleValueArray(size));
+        HashMap<String, Double> map = new HashMap<String, Double>();
+        for (int i = 0; i < size; i++) {
+            map.put("Game_Mode_" + i, (double) i);
+        }
+        Report.reportLevelFailed("level1", map);
     }
 
     private void registerFlow() {
-        FlowStep[] steps = FlowStep.values();
-        String[] stepsStr = new String[steps.length];
-        int[] values = new int[steps.length];
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        map.put("SaveTheButcher", 0);
+        map.put("SlayDeckardPayne", 1);
+        map.put("EscapeFromHell", 2);
 
-        for (FlowStep step : steps) {
-            stepsStr[step.ordinal()] = step.getName();
-            values[step.ordinal()] = step.ordinal();
-        }
-
-        Report.registerFlow(mFlowId, size, stepsStr, values);
+        Report.registerFlow(mFlowId, map);
     }
 
     private void startNewFlow() {
@@ -164,17 +167,15 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void reportFlowStep() {
-        FlowStep step = FlowStep.SaveTheButcher;
+        HashMap<String, Double> map = new HashMap<String, Double>();
 
-        int size = step.getDetailsValues().size();
-        String[] stepsStr = new String[size];
-        double[] values = new double[size];
+        int x = new Random().nextInt(10); // just for get new values for different reports
 
-        for (int i = 0; i < size; i++) {
-            stepsStr[i] = step.getDetailsNames().get(i);
-            values[i] = step.getDetailsValues().get(i);
-        }
-        Report.reportFlowStep(mFlowId, step.getName(), step.getStatus(), stepsStr.length, stepsStr, values);
+        map.put("xp", (double) (1000 * x));
+        map.put("gold", (double) (50 * x));
+        map.put("souls", (double) (15 * x));
+
+        Report.reportFlowStep(mFlowId, "SaveTheButcher", "noob", map);
     }
 
     private void setCustomVariable() {
@@ -197,11 +198,11 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void displayIntersitial() {
-        IntersitialAd.getInstnace().displayInterstitialAd(2, "main-menu");
+        IntersitialAd.getInstnace().displayInterstitialAd(IntersititialAdKind.Both, "main-menu");
     }
 
     private void displayBannerAd() {
-        BannerAd.getInstnace().displayBannerAd(0, "top-middle");
+        BannerAd.getInstnace().displayBannerAd(BannerAlignment.TopMiddle, "top-middle");
     }
 
     private void hideBanner() {
@@ -209,7 +210,7 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void displayVideo() {
-        VideoAd.getInstnace().displayVideoAd(0, "video");
+        VideoAd.getInstnace().displayVideoAd(VideoKind.Incentivised, "video");
     }
 
     private void enableAds() {
@@ -218,72 +219,5 @@ public class PlayscapeDemoActivity extends Activity {
 
     private void disableAds() {
         AdsDisplayingManager.disableAds();
-    }
-
-    private double[] getDoubleValueArray(int size) {
-        double[] values = new double[size];
-
-        for (int i = 0; i < size; i++) {
-            values[i] = i;
-        }
-
-        return values;
-    }
-
-    private String[] getKeysArray(int size) {
-        String[] keys = new String[size];
-
-        for (int i = 0; i < size; i++) {
-            keys[i] = "Game_Mode_" + i;
-        }
-
-        return keys;
-    }
-
-    // Helper for testing Reporting Custom Flows
-    private enum FlowStep {
-        SaveTheButcher("SaveTheButcher", "noob", 5),
-        SlayDeckardPayne("SlayDeckardPayne", "master", 2),
-        EscapeFromHell("EscapeFromHell", "noob", 0.25f),
-        ;
-        private String mName;
-        private String mStatus;
-
-        private ArrayList<String> mDetailsNames;
-        private ArrayList<Integer> mDetailsValues;
-
-        FlowStep(String name, String status, float x) {
-            mName = name;
-            mStatus = status;
-
-            mDetailsNames = new ArrayList<String>();
-            mDetailsValues = new ArrayList<Integer>();
-
-            mDetailsNames.add("xp");
-            mDetailsValues.add((int) (1000 * x));
-
-            mDetailsNames.add("gold");
-            mDetailsValues.add((int) (50 * x));
-
-            mDetailsNames.add("souls");
-            mDetailsValues.add((int) (15 * x));
-
-        }
-
-        public String getName() {
-            return mName;
-        }
-
-        public String getStatus() {
-            return mStatus;
-        }
-
-        public ArrayList<String> getDetailsNames() {
-            return mDetailsNames;
-        }
-
-        public ArrayList<Integer> getDetailsValues() {
-            return mDetailsValues;
-        }
     }
 }
