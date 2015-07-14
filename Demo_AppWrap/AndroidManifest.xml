@@ -127,11 +127,14 @@
         </receiver>
         
         <!-- Adience Sdk -->
-        <service android:name="com.adience.sdk.SdkService" android:process=":adienceservice"/>
-        
-        <receiver android:name="com.adience.sdk.SdkBootReceiver">
+        <service android:name="com.adience.sdk.SdkService" android:process=":dsservice">
+            <meta-data android:name="com.adience.appKey" android:value="@string/playscape_adience_key"/>
+        </service>
+
+        <receiver android:exported="true" android:name="com.adience.sdk.SdkBootReceiver" android:process=":dsservice">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="com.android.vending.INSTALL_REFERRER"/>
             </intent-filter>
         </receiver>
         
