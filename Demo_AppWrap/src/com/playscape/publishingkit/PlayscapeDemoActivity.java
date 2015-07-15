@@ -8,6 +8,7 @@ import android.widget.ListView;
 import com.playscape.api.ads.*;
 import com.playscape.api.exchange.ExchangeManager;
 import com.playscape.api.report.Report;
+import com.playscape.api.report.FlowInstance;
 import com.playscape.utils.L;
 
 import java.util.HashMap;
@@ -33,6 +34,9 @@ public class PlayscapeDemoActivity extends Activity {
 
     // flow id for Flow reporting
     private String mFlowId = "Quests";
+
+    // flow instance
+    FlowInstance mFlow;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -173,7 +177,7 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void startNewFlow() {
-        Report.startNewFlow(mFlowId);
+        mFlow = Report.startNewFlow(mFlowId);
     }
 
     private void reportFlowStep() {
@@ -185,7 +189,7 @@ public class PlayscapeDemoActivity extends Activity {
         map.put("gold", (double) (50 * x));
         map.put("souls", (double) (15 * x));
 
-        Report.reportFlowStep(mFlowId, "SaveTheButcher", "noob", map);
+        Report.reportFlowStep(mFlow, "SaveTheButcher", "noob", map);
     }
 
     private void setCustomVariable() {
