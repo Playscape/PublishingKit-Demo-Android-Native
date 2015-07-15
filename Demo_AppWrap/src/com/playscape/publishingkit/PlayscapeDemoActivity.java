@@ -11,6 +11,9 @@ import com.playscape.api.report.Report;
 import com.playscape.api.report.FlowInstance;
 import com.playscape.utils.L;
 
+import com.playscape.report.utils.WalletOperation;
+import com.playscape.report.utils.WalletResult;
+
 import java.util.HashMap;
 import java.util.Random;
 
@@ -136,11 +139,9 @@ public class PlayscapeDemoActivity extends Activity {
        ************** and AdsDisplayingManager classes */
 
     private void reportWalletOperation() {
-        int walletOperation = 0; // Deposit = 0; Withdraw = 1
-        int walletResult = 0; // Success = 0, Failed = 1, Cancel = 2
         String dealType = "SingleItem";
-        Report.reportWalletOperation(walletOperation, dealType, "transactionID", 50.0d, "currency",
-                "source", "flow", "step", "item", walletResult, "reason");
+        Report.reportWalletOperation(WalletOperation.Deposit, dealType, "transactionID", 50.0d, "currency",
+                "source", "flow", "step", "item", WalletResult.Success, "reason");
     }
 
     private void reportLevelStarted() {
