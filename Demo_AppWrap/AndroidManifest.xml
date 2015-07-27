@@ -55,6 +55,7 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     
     <application android:label="@string/app_name" android:name="com.playscape.playscapeapp.PlayscapeApp">
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <activity android:configChanges="orientation" android:label="@string/app_name" android:launchMode="singleTop" android:name="com.playscape.publishingkit.PlayscapeDemoActivity" android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -62,6 +63,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:configChanges="orientation" android:label="@string/app_name" android:launchMode="singleTop" android:name="com.playscape.publishingkit.FacebookDemoActivity" android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+
+        <activity android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="@string/app_name" android:name="com.facebook.FacebookActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider1606736796248205" android:exported="true" android:name="com.facebook.FacebookContentProvider"/>
+
         <!-- GCM -->
         <!--
          BroadcastReceiver that will receive intents from GCM
@@ -147,9 +154,9 @@
         <activity android:configChanges="keyboardHidden|orientation" android:name="com.mopub.mobileads.MraidBrowser"/>
         <activity android:configChanges="keyboardHidden|orientation" android:name="com.mopub.mobileads.MraidVideoPlayerActivity"/>
         <!-- Vungle Video Ads -->
-        <activity android:name="com.vungle.sdk.VungleAdvert" android:configChanges="keyboardHidden|orientation|screenSize" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-        <activity android:name="com.vungle.publisher.FullScreenAdActivity" android:configChanges="keyboardHidden|orientation|screenSize" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        <service android:name="com.vungle.sdk.VungleIntentService" />
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.vungle.sdk.VungleAdvert" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.vungle.publisher.FullScreenAdActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <service android:name="com.vungle.sdk.VungleIntentService"/>
         <!-- AdColony Video Ads -->
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.jirbo.adcolony.AdColonyOverlay" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.jirbo.adcolony.AdColonyFullscreen" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>

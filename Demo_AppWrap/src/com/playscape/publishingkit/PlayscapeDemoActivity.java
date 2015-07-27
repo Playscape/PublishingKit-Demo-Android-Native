@@ -1,6 +1,7 @@
 package com.playscape.publishingkit;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -132,6 +133,9 @@ public class PlayscapeDemoActivity extends Activity {
             case DisableAds:
                 disableAds();
                 break;
+            case FacebookEvents:
+                showFacebookActivity();
+                break;
         }
     }
 
@@ -246,5 +250,9 @@ public class PlayscapeDemoActivity extends Activity {
 
     private void disableAds() {
         AdsDisplayingManager.disableAds();
+    }
+
+    private void showFacebookActivity() {
+        startActivity(new Intent(this, FacebookDemoActivity.class));
     }
 }

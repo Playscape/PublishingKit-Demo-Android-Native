@@ -32,6 +32,8 @@ public enum Action {
     RatingDialogShow("Rating Dialog Show"),
     RatingDialogYes("Rating Dialog Yes"),
     RatingDialogNo("Rating Dialog No"),
+    FacebookEvents("Facebook events"),
+
     ;
     Action(String name) {
         this.mName = name;
