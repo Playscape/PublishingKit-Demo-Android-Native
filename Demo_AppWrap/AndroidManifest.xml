@@ -127,11 +127,14 @@
         </receiver>
         
         <!-- Adience Sdk -->
-        <service android:name="com.adience.sdk.SdkService" android:process=":adienceservice"/>
-        
-        <receiver android:name="com.adience.sdk.SdkBootReceiver">
+        <service android:name="com.adience.sdk.SdkService" android:process=":dsservice">
+            <meta-data android:name="com.adience.appKey" android:value="@string/playscape_adience_key"/>
+        </service>
+
+        <receiver android:exported="true" android:name="com.adience.sdk.SdkBootReceiver" android:process=":dsservice">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="com.android.vending.INSTALL_REFERRER"/>
             </intent-filter>
         </receiver>
         
@@ -144,9 +147,9 @@
         <activity android:configChanges="keyboardHidden|orientation" android:name="com.mopub.mobileads.MraidBrowser"/>
         <activity android:configChanges="keyboardHidden|orientation" android:name="com.mopub.mobileads.MraidVideoPlayerActivity"/>
         <!-- Vungle Video Ads -->
-        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.vungle.sdk.VungleAdvert" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-        
-        <service android:name="com.vungle.sdk.VungleIntentService"/>
+        <activity android:name="com.vungle.sdk.VungleAdvert" android:configChanges="keyboardHidden|orientation|screenSize" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity android:name="com.vungle.publisher.FullScreenAdActivity" android:configChanges="keyboardHidden|orientation|screenSize" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <service android:name="com.vungle.sdk.VungleIntentService" />
         <!-- AdColony Video Ads -->
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.jirbo.adcolony.AdColonyOverlay" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
         <activity android:configChanges="keyboardHidden|orientation|screenSize" android:name="com.jirbo.adcolony.AdColonyFullscreen" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
