@@ -18,6 +18,8 @@ import com.facebook.share.widget.ShareDialog;
 
 import java.util.Arrays;
 
+import com.facebook.internal.CallbackManagerImpl;
+
 public class FacebookDemoActivity extends Activity {
 
     private static final String TAG = FacebookDemoActivity.class.getSimpleName();
@@ -28,6 +30,9 @@ public class FacebookDemoActivity extends Activity {
     private static final int LOGIN_CODE = BASE_OFFSET;
     private static final int SHARE_CODE = 64207;
 
+    private int mLoginCode;
+    private int mShareCode;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +42,12 @@ public class FacebookDemoActivity extends Activity {
         setContentView(R.layout.fb_demo);
 
         configureButtons();
+
+        mLoginCode = CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode();
+        mShareCode = CallbackManagerImpl.RequestCodeOffset.Share.toRequestCode();
+
+        Log.i(TAG, "mLoginCode: " + mLoginCode);
+        Log.i(TAG, "mShareCode: " + mShareCode);
     }
 
     private void configureButtons() {
