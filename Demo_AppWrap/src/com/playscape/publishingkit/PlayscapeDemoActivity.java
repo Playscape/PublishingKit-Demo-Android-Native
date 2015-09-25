@@ -1,18 +1,16 @@
 package com.playscape.publishingkit;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.playscape.api.ads.*;
 import com.playscape.api.exchange.ExchangeManager;
-import com.playscape.api.report.Report;
 import com.playscape.api.report.FlowInstance;
-import com.playscape.utils.L;
-
+import com.playscape.api.report.Report;
 import com.playscape.report.utils.WalletOperation;
 import com.playscape.report.utils.WalletResult;
+import com.playscape.utils.L;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -22,7 +20,7 @@ import java.util.Random;
  * <p/>
  * This class shows how to use Playscape Exchange API
  */
-public class PlayscapeDemoActivity extends Activity {
+public class PlayscapeDemoActivity extends BaseActivity {
 
     private static final String TAG = PlayscapeDemoActivity.class.getSimpleName();
 
@@ -225,7 +223,7 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void displayIntersitial() {
-        IntersitialAd.getInstnace().displayInterstitialAd(IntersititialAdKind.Both, "main-menu");
+        IntersitialAd.getInstance().displayInterstitialAd(IntersititialAdKind.Both, "main-menu");
     }
 
     private void displayBannerAd() {
@@ -237,7 +235,7 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void displayVideo() {
-        VideoAd.getInstnace().displayVideoAd(VideoKind.Incentivised, "video");
+        VideoAd.getInstance().displayVideoAd(VideoKind.Incentivised, "video");
     }
 
     private void enableAds() {
