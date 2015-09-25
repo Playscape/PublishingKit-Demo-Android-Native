@@ -227,11 +227,11 @@ public class PlayscapeDemoActivity extends BaseActivity {
     }
 
     private void displayBannerAd() {
-        BannerAd.getInstnace().displayBannerAd(BannerAlignment.TopMiddle, "top-middle");
+        BannerAd.getInstance().displayBannerAd(BannerAlignment.TopMiddle, "top-middle");
     }
 
     private void hideBanner() {
-        BannerAd.getInstnace().hideBannerAd();
+        BannerAd.getInstance().hideBannerAd();
     }
 
     private void displayVideo() {
