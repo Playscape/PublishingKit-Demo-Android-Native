@@ -223,19 +223,19 @@ public class PlayscapeDemoActivity extends BaseActivity {
     }
 
     private void displayIntersitial() {
-        IntersitialAd.getInstance().displayInterstitialAd(IntersititialAdKind.Both, "main-menu");
+        IntersitialAd.getInstnace().displayInterstitialAd(IntersititialAdKind.Both, "main-menu");
     }
 
     private void displayBannerAd() {
-        BannerAd.getInstance().displayBannerAd(BannerAlignment.TopMiddle, "top-middle");
+        BannerAd.getInstnace().displayBannerAd(BannerAlignment.TopMiddle, "top-middle");
     }
 
     private void hideBanner() {
-        BannerAd.getInstance().hideBannerAd();
+        BannerAd.getInstnace().hideBannerAd();
     }
 
     private void displayVideo() {
-        VideoAd.getInstance().displayVideoAd(VideoKind.Incentivised, "video");
+        VideoAd.getInstnace().displayVideoAd(VideoKind.Incentivised, "video");
     }
 
     private void enableAds() {
