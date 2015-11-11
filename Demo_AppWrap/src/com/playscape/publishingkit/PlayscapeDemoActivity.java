@@ -223,7 +223,7 @@ public class PlayscapeDemoActivity extends BaseActivity {
     }
 
     private void displayIntersitial() {
-        IntersitialAd.getInstance().displayInterstitialAd(IntersititialAdKind.Both, "main-menu");
+        IntersitialAd.getInstance().displayInterstitialAd("main-menu");
     }
 
     private void displayBannerAd() {
