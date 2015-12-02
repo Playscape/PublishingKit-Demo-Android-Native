@@ -97,6 +97,9 @@ public class PlayscapeDemoActivity extends BaseActivity {
             case ReportEvent:
                 reportEvent();
                 break;
+            case ReportAttrEvent:
+                reportAttrEvent();
+                break;
 // **** Rate Us
             case RatingDialogShow:
                 reportDialogShow();
@@ -204,6 +207,17 @@ public class PlayscapeDemoActivity extends BaseActivity {
     private void reportEvent() {
         amount++;
         Report.reportEvent("custom_event_" + amount);
+    }
+    
+    private void reportAttrEvent() {
+      amount++;
+      
+      Map<String, String> eventAttr = new HashMap<String, String>();
+      eventAttr.put("key_1", "value_1");
+      eventAttr.put("key_2", "value_2");
+      eventAttr.put("key_3", "100");
+      
+      Report.reportEvent("custom_event_" + amount, eventAttr);
     }
 
     private void reportDialogShow() {
