@@ -1,19 +1,21 @@
 package com.playscape.publishingkit;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.playscape.api.ads.*;
 import com.playscape.api.exchange.ExchangeManager;
-import com.playscape.api.report.FlowInstance;
 import com.playscape.api.report.Report;
-import com.playscape.report.utils.WalletOperation;
-import com.playscape.report.utils.WalletResult;
+import com.playscape.api.report.FlowInstance;
 import com.playscape.utils.L;
 
+import com.playscape.report.utils.WalletOperation;
+import com.playscape.report.utils.WalletResult;
+
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -21,7 +23,7 @@ import java.util.Random;
  * <p/>
  * This class shows how to use Playscape Exchange API
  */
-public class PlayscapeDemoActivity extends BaseActivity {
+public class PlayscapeDemoActivity extends Activity {
 
     private static final String TAG = PlayscapeDemoActivity.class.getSimpleName();
 
@@ -98,9 +100,6 @@ public class PlayscapeDemoActivity extends BaseActivity {
             case ReportEvent:
                 reportEvent();
                 break;
-            case ReportAttrEvent:
-                reportAttrEvent();
-                break;
 // **** Rate Us
             case RatingDialogShow:
                 reportDialogShow();
@@ -133,6 +132,9 @@ public class PlayscapeDemoActivity extends BaseActivity {
                 break;
             case DisableAds:
                 disableAds();
+                break;
+            case FacebookEvents:
+                showFacebookActivity();
                 break;
         }
     }
@@ -209,17 +211,6 @@ public class PlayscapeDemoActivity extends BaseActivity {
         amount++;
         Report.reportEvent("custom_event_" + amount);
     }
-    
-    private void reportAttrEvent() {
-      amount++;
-      
-      Map<String, String> eventAttr = new HashMap<String, String>();
-      eventAttr.put("key_1", "value_1");
-      eventAttr.put("key_2", "value_2");
-      eventAttr.put("key_3", "100");
-      
-      Report.reportEvent("custom_event_" + amount, eventAttr);
-    }
 
     private void reportDialogShow() {
         Report.reportRatingDialogShow();
@@ -238,7 +229,7 @@ public class PlayscapeDemoActivity extends BaseActivity {
     }
 
     private void displayIntersitial() {
-        IntersitialAd.getInstance().displayInterstitialAd("main-menu");
+        IntersitialAd.getInstance().displayInterstitialAd(IntersititialAdKind.Both, "main-menu");
     }
 
     private void displayBannerAd() {
@@ -259,5 +250,9 @@ public class PlayscapeDemoActivity extends BaseActivity {
 
     private void disableAds() {
         AdsDisplayingManager.disableAds();
+    }
+
+    private void showFacebookActivity() {
+        startActivity(new Intent(this, FacebookDemoActivity.class));
     }
 }

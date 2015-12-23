@@ -7,18 +7,26 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 import com.facebook.*;
-import com.facebook.internal.CallbackManagerImpl;
+import com.facebook.appevents.AppEventsConstants;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.facebook.share.ShareApi;
+import com.facebook.share.Sharer;
+import com.facebook.share.widget.AppInviteDialog;
+import com.facebook.share.model.AppInviteContent;
+import com.facebook.share.model.GameRequestContent;
+import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-
-import com.facebook.internal.CallbackManagerImpl;
 
 public class FacebookDemoActivity extends Activity {
 
@@ -26,33 +34,29 @@ public class FacebookDemoActivity extends Activity {
 
     private CallbackManager mCallbackManager;
 
-    private static final int BASE_OFFSET = 64206;
-    private static final int LOGIN_CODE = BASE_OFFSET;
-    private static final int SHARE_CODE = 64207;
-
-    private int mLoginCode;
-    private int mShareCode;
+    private int i = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
+        // FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
 
         setContentView(R.layout.fb_demo);
 
         configureButtons();
+    }
 
-        mLoginCode = CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode();
-        mShareCode = CallbackManagerImpl.RequestCodeOffset.Share.toRequestCode();
-
-        Log.i(TAG, "mLoginCode: " + mLoginCode);
-        Log.i(TAG, "mShareCode: " + mShareCode);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void configureButtons() {
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_fb_button);
-        loginButton.setReadPermissions("user_friends");
+        loginButton.setPublishPermissions("publish_actions");
 
         mCallbackManager = CallbackManager.Factory.create();
 
@@ -61,6 +65,8 @@ public class FacebookDemoActivity extends Activity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         Log.i(TAG, "onSuccess. token: " + loginResult.getAccessToken());
+                        showCreateAppRequestButton();
+                        showGetReuqests();
                     }
 
                     @Override
@@ -78,7 +84,7 @@ public class FacebookDemoActivity extends Activity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(FacebookDemoActivity.this, Arrays.asList("public_profile", "user_friends"));
+                LoginManager.getInstance().logInWithPublishPermissions(FacebookDemoActivity.this, Arrays.asList("publish_actions"));
             }
         });
 
@@ -94,50 +100,195 @@ public class FacebookDemoActivity extends Activity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(FacebookDemoActivity.this, "on share click", Toast.LENGTH_SHORT).show();
                 ShareLinkContent content = new ShareLinkContent.Builder()
                         .setContentUrl(Uri.parse("https://developers.facebook.com"))
                         .build();
                 ShareDialog.show(FacebookDemoActivity.this, content);
             }
         });
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case LOGIN_CODE:
-                trackLogin(resultCode);
-                break;
-            case SHARE_CODE:
-                trackShare(resultCode, data);
-                break;
-
-        }
-    }
-
-    private void trackLogin(int resultCode) {
-        String successful = "";
-        String failed = "";
-        String canceled = "";
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (AccessToken.getCurrentAccessToken() != null) {
-                successful = "Success!";
-            } else {
-                failed = "Failed!";
+        share = (Button) findViewById(R.id.share_api);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareWithShareAPI();
             }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            canceled = "Canceled!";
-        }
-        Log.i(TAG, successful + failed + canceled);
+        });
+
+        Button callRequestButton = (Button) findViewById(R.id.call_request);
+        callRequestButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               if(i % 2 == 0) {
+                   callGraphRequest();
+               } else {
+                   callShareGraphRequest();
+               }
+               i++;
+           }
+       });
+
+       Button logEvent = (Button) findViewById(R.id.log_event);
+       logEvent.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              Bundle parameters = new Bundle();
+              parameters.putString(AppEventsConstants.EVENT_PARAM_CURRENCY, "USD");
+              parameters.putString(AppEventsConstants.EVENT_PARAM_CONTENT_TYPE, "product");
+              parameters.putString(AppEventsConstants.EVENT_PARAM_CONTENT_ID, "HDFU-8452");
+
+              AppEventsLogger logger = AppEventsLogger.newLogger(FacebookDemoActivity.this);
+              logger.logEvent(AppEventsConstants.EVENT_NAME_PURCHASED,
+                54.23,
+                parameters);
+          }
+      });
     }
 
-    private void trackShare(int resultCode, Intent data) {
-        int targetRequestCode = CallbackManagerImpl.RequestCodeOffset.Share.toRequestCode();
-        Log.i(TAG, "Share is here!");
+    private void shareWithShareAPI() {
+        ShareContent linkContent = new ShareLinkContent.Builder()
+                .setContentTitle("share api")
+                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                .build();
+        ShareApi.share(linkContent, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+                Log.i(TAG, "FacebookCallback. onSuccess");
+            }
+
+            @Override
+            public void onCancel() {
+                Log.i(TAG, "FacebookCallback. onCancel");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Log.i(TAG, "FacebookCallback. onError. " + e.toString());
+            }
+        });
+    }
+
+    private void callGraphRequest() {
+        Bundle params = new Bundle();
+        params.putString("score", "3444");
+        /* make the API call */
+        GraphRequest graphRequest = new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/score/",
+                params,
+                HttpMethod.POST,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        /* handle the result */
+                        Log.i(TAG, "GraphRequestCallback. onCompleted");
+                    }
+                }
+        );
+        graphRequest.executeAsync();
+    }
+
+    private void callShareGraphRequest() {
+        Bundle params = new Bundle();
+        params.putString("message", "3444");
+        /* make the API call */
+        GraphRequest graphRequest = new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/feed/",
+                params,
+                HttpMethod.POST,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        /* handle the result */
+                        Log.i(TAG, "callShareGraphRequest. onCompleted");
+                    }
+                }
+        );
+        graphRequest.executeAsync();
+    }
+
+    private void showCreateAppRequestButton() {
+        Button button = (Button) findViewById(R.id.create_request);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createRequest(AccessToken.getCurrentAccessToken().getUserId());
+            }
+        });
+    }
+
+    private void showGetReuqests() {
+        Button button = (Button) findViewById(R.id.get_requests_amount);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getAppRequests(AccessToken.getCurrentAccessToken().getUserId());
+            }
+        });
+    }
+
+    private void createRequest(String id) {
+        String appLinkUrl, previewImageUrl;
+        appLinkUrl = "https://fb.me/1641943392727545";
+        previewImageUrl = "https://lh3.ggpht.com/mTEVhLX7HL-tP2WApecuL4LAh4zvaBYs3RpkbhnHGqCtpcOfHnjc6xP8D3OQ7qIUrsk=w300-rw";
+
+       if (AppInviteDialog.canShow()) {
+           AppInviteContent content = new AppInviteContent.Builder()
+                   .setApplinkUrl(appLinkUrl)
+                   .setPreviewImageUrl(previewImageUrl)
+                   .build();
+           AppInviteDialog.show(FacebookDemoActivity.this, content);
+       }
+    }
+
+    private void getAppRequests(String userId) {
+        String path = "/" + userId + "/apprequests";
+        Log.i(TAG, "getAppRequests. path: " + path);
+        /* make the API call */
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                path,
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        /* handle the result */
+                        Log.i(TAG, "apprequests. response.raw: " + response.getRawResponse());
+                        try {
+                            JSONArray data = response.getJSONObject().getJSONArray("data");
+                            int dataLength = (data != null ? data.length() : -1);
+                            Log.i(TAG, "apprequests. data lenght: " + dataLength);
+
+                            if(dataLength > 0) {
+                                JSONObject obj = data.getJSONObject(0);
+                                String requestId = obj.getString("id");
+                                getRequest(requestId);
+                            } else {
+                                Log.i(TAG, "data is empty!");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        ).executeAsync();
+    }
+
+    private void getRequest(String requestId) {
+        Log.i(TAG, "getRequest. requestId: " + requestId);
+        /* make the API call */
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/" + requestId,
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        /* handle the result */
+                        Log.i(TAG, "getRequest. response.raw: " + response.getRawResponse());
+                    }
+                }
+        ).executeAsync();
     }
 }

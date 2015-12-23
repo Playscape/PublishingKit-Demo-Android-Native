@@ -20,7 +20,6 @@ public enum Action {
     GetCustomVariable("Get custom variable"),
     // **** Custom analytics
     ReportEvent("Report custom event"),
-    ReportAttrEvent("Report custom attributed event"),
     // ************** Playscape Exchange Catalog **************
     ShowPlayscapeCatalog("Show Playscape catalog"),
     // ************** Ad mediation **************
