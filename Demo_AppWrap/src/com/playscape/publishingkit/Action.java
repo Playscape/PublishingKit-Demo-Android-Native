@@ -20,7 +20,6 @@ public enum Action {
     GetCustomVariable("Get custom variable"),
     // **** Custom analytics
     ReportEvent("Report custom event"),
-    ReportAttrEvent("Report custom attributed event"),
     // ************** Playscape Exchange Catalog **************
     ShowPlayscapeCatalog("Show Playscape catalog"),
     // ************** Ad mediation **************
@@ -33,6 +32,8 @@ public enum Action {
     RatingDialogShow("Rating Dialog Show"),
     RatingDialogYes("Rating Dialog Yes"),
     RatingDialogNo("Rating Dialog No"),
+    FacebookEvents("Facebook events"),
+
     ;
     Action(String name) {
         this.mName = name;
