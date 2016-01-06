@@ -15,17 +15,13 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
+import com.facebook.share.model.*;
 import com.facebook.share.widget.AppInviteDialog;
-import com.facebook.share.model.AppInviteContent;
-import com.facebook.share.model.GameRequestContent;
-import com.facebook.share.model.ShareContent;
-import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FacebookDemoActivity extends Activity {
@@ -67,6 +63,7 @@ public class FacebookDemoActivity extends Activity {
                         Log.i(TAG, "onSuccess. token: " + loginResult.getAccessToken());
                         showCreateAppRequestButton();
                         showGetReuqests();
+                        showSendGraphObjectRequestButton();
                     }
 
                     @Override
@@ -217,6 +214,17 @@ public class FacebookDemoActivity extends Activity {
         });
     }
 
+    private void showSendGraphObjectRequestButton() {
+        Button button = (Button) findViewById(R.id.send_go_request);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getGraphObjectIdAndSendLife();
+            }
+        });
+    }
+
     private void showGetReuqests() {
         Button button = (Button) findViewById(R.id.get_requests_amount);
         button.setVisibility(View.VISIBLE);
@@ -240,6 +248,76 @@ public class FacebookDemoActivity extends Activity {
                    .build();
            AppInviteDialog.show(FacebookDemoActivity.this, content);
        }
+    }
+
+    private void getGraphObjectIdAndSendLife() {
+        final Bundle params = new Bundle();
+        String fbAppId = getString(R.string.facebook_app_id);
+        String type = "playscape_demo_andr:life";
+
+        String sampleUrl = "http://samples.ogp.me/1618115238450093";
+        String sampleTitle = "Sample titile";
+        String imageUrl = "https://s-static.ak.fbcdn.net/images/devsite/attachment_blank.png";
+        params.putString("object", "{\"fb:app_id\":\"" + fbAppId
+                + "\",\"og:type\":\"" + type + "\""
+                + ",\"og:url\":\"" + sampleUrl + "\""
+                + ",\"og:title\":\"" + sampleTitle + "\""
+                + ",\"og:image\":\"" + imageUrl + "\"}");
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "me/objects/" + type,
+                params,
+                HttpMethod.POST,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        /* handle the result */
+                        Log.i(TAG, "sendGraphObjectRequest. response.raw: " + response.getRawResponse());
+                        if(response.getError() != null) {
+                            Log.e(TAG, "sendGraphObjectRequest. " + response.getError().toString());
+                        } else {
+                            try {
+                                String objectId = response.getJSONObject().getString("id");
+                                sendGraphObjectRequest(AccessToken.getCurrentAccessToken().getUserId(), objectId);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                }
+        ).executeAsync();
+    }
+
+    private void sendGraphObjectRequest(String userID, String objectId) {
+
+        final Bundle params = new Bundle();
+
+        String fbAppId = getString(R.string.facebook_app_id);
+
+        params.putString("object_id", objectId);
+        params.putString("app_id", fbAppId);
+        params.putString("title", "Sample life");
+        params.putString("message", "Sample life for friend");
+        params.putString("action_type", "send");
+        params.putString("action_type", "send");
+
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/" + userID + "/apprequests",
+                params,
+                HttpMethod.POST,
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse graphResponse) {
+                        Log.i(TAG, "sendGraphObjectRequest. graphResponse.raw: " + graphResponse.getRawResponse());
+                        if (graphResponse.getError() != null) {
+                            Log.e(TAG, "sendGraphObjectRequest. " + graphResponse.getError().toString());
+                        } else {
+
+                        }
+                    }
+                }
+        ).executeAsync();
     }
 
     private void getAppRequests(String userId) {
