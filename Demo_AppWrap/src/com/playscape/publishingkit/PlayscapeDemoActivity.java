@@ -63,6 +63,14 @@ public class PlayscapeDemoActivity extends Activity {
         });
     }
 
+    public void onResume() {
+        super.onResume();
+    }
+
+    public void onPause() {
+        super.onPause();
+    }
+
     private void executeAPIMethod(Action action) {
         switch (action) {
 // ************** Report section **************
@@ -229,7 +237,7 @@ public class PlayscapeDemoActivity extends Activity {
     }
 
     private void displayIntersitial() {
-        IntersitialAd.getInstance().displayInterstitialAd(IntersititialAdKind.Both, "main-menu");
+        IntersitialAd.getInstance().displayInterstitialAd("main-menu");
     }
 
     private void displayBannerAd() {
