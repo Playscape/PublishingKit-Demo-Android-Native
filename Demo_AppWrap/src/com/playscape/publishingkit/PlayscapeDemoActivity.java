@@ -1,16 +1,19 @@
 package com.playscape.publishingkit;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.playscape.api.ads.*;
 import com.playscape.api.exchange.ExchangeManager;
-import com.playscape.api.report.FlowInstance;
 import com.playscape.api.report.Report;
+import com.playscape.api.report.FlowInstance;
+import com.playscape.utils.L;
+
 import com.playscape.report.utils.WalletOperation;
 import com.playscape.report.utils.WalletResult;
-import com.playscape.utils.L;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -20,7 +23,7 @@ import java.util.Random;
  * <p/>
  * This class shows how to use Playscape Exchange API
  */
-public class PlayscapeDemoActivity extends BaseActivity {
+public class PlayscapeDemoActivity extends Activity {
 
     private static final String TAG = PlayscapeDemoActivity.class.getSimpleName();
 
@@ -58,6 +61,14 @@ public class PlayscapeDemoActivity extends BaseActivity {
                 executeAPIMethod((Action) view.getTag());
             }
         });
+    }
+
+    public void onResume() {
+        super.onResume();
+    }
+
+    public void onPause() {
+        super.onPause();
     }
 
     private void executeAPIMethod(Action action) {
@@ -129,6 +140,9 @@ public class PlayscapeDemoActivity extends BaseActivity {
                 break;
             case DisableAds:
                 disableAds();
+                break;
+            case FacebookEvents:
+                showFacebookActivity();
                 break;
         }
     }
@@ -223,7 +237,7 @@ public class PlayscapeDemoActivity extends BaseActivity {
     }
 
     private void displayIntersitial() {
-        IntersitialAd.getInstance().displayInterstitialAd(IntersititialAdKind.Both, "main-menu");
+        IntersitialAd.getInstance().displayInterstitialAd("main-menu");
     }
 
     private void displayBannerAd() {
@@ -244,5 +258,9 @@ public class PlayscapeDemoActivity extends BaseActivity {
 
     private void disableAds() {
         AdsDisplayingManager.disableAds();
+    }
+
+    private void showFacebookActivity() {
+        startActivity(new Intent(this, FacebookDemoActivity.class));
     }
 }
