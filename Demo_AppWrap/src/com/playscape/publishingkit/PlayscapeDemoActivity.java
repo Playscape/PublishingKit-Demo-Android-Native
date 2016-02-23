@@ -135,6 +135,9 @@ public class PlayscapeDemoActivity extends Activity {
             case DisplayVideo:
                 displayVideo();
                 break;
+            case DisplayVideoNonIncentivised:
+                displayVideoNonIncentivised();
+                break;
             case EnableAds:
                 enableAds();
                 break;
@@ -250,6 +253,10 @@ public class PlayscapeDemoActivity extends Activity {
 
     private void displayVideo() {
         VideoAd.getInstance().displayVideoAd(VideoKind.Incentivised, "video");
+    }
+
+    private void displayVideoNonIncentivised() {
+        VideoAd.getInstance().displayVideoAd(VideoKind.NonIncentivised, "video");
     }
 
     private void enableAds() {

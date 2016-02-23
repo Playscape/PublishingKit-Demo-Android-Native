@@ -319,13 +319,13 @@
                 importClass(java.net.URL);
 
 
-                var echo = PublishingKit_Demo_Android_Native.createTask("echo");
+                var echo = self.getProject().createTask("echo");
 
-                var full_api_key = PublishingKit_Demo_Android_Native.getProperty("playscape.api.key");
+                var full_api_key = self.getProject().getProperty("playscape.api.key");
 
                 var base_url = "https://playscape-backend-prod.appspot.com";
-                if(PublishingKit_Demo_Android_Native.getProperty("playscape.base.url")) {
-                    base_url = PublishingKit_Demo_Android_Native.getProperty("playscape.base.url");
+                if(self.getProject().getProperty("playscape.base.url")) {
+                    base_url = self.getProject().getProperty("playscape.base.url");
                 }
 
                 if(full_api_key) {
@@ -373,30 +373,30 @@
                 if(response.getStatusLine().getStatusCode() == 200) {
                 // we'll use properties to update users configuration
 
-                PublishingKit_Demo_Android_Native.setProperty("analytics_reporter_id", jsonData.config.analytics_report.reporter_id);
-                PublishingKit_Demo_Android_Native.setProperty("ads_config_url", jsonData.config.ads_config.url);
+                self.getProject().setProperty("analytics_reporter_id", jsonData.config.analytics_report.reporter_id);
+                self.getProject().setProperty("ads_config_url", jsonData.config.ads_config.url);
 
-                PublishingKit_Demo_Android_Native.setProperty("admob_interstitials_ad_unit_id", jsonData.config.admob.interstitials_ad_unit_id);
-                PublishingKit_Demo_Android_Native.setProperty("admob_banners_ad_unit_id", jsonData.config.admob.banners_ad_unit_id);
-                PublishingKit_Demo_Android_Native.setProperty("admob_test_device_id", jsonData.config.admob.test_device_id);
+                self.getProject().setProperty("admob_interstitials_ad_unit_id", jsonData.config.admob.interstitials_ad_unit_id);
+                self.getProject().setProperty("admob_banners_ad_unit_id", jsonData.config.admob.banners_ad_unit_id);
+                self.getProject().setProperty("admob_test_device_id", jsonData.config.admob.test_device_id);
 
-                PublishingKit_Demo_Android_Native.setProperty("chartboost_app_id", jsonData.config.chartboost.app_id);
-                PublishingKit_Demo_Android_Native.setProperty("chartboost_app_signature", jsonData.config.chartboost.app_signature);
+                self.getProject().setProperty("chartboost_app_id", jsonData.config.chartboost.app_id);
+                self.getProject().setProperty("chartboost_app_signature", jsonData.config.chartboost.app_signature);
 
-                PublishingKit_Demo_Android_Native.setProperty("vungle_app_id", jsonData.config.vungle.app_id);
-                PublishingKit_Demo_Android_Native.setProperty("millennialmedia_app_id", jsonData.config.millennialmedia.app_id);
+                self.getProject().setProperty("vungle_app_id", jsonData.config.vungle.app_id);
+                self.getProject().setProperty("millennialmedia_app_id", jsonData.config.millennialmedia.app_id);
 
-                PublishingKit_Demo_Android_Native.setProperty("startapp_developer_id", jsonData.config.startapp.developer_id);
-                PublishingKit_Demo_Android_Native.setProperty("startapp_app_id", jsonData.config.startapp.app_id);
+                self.getProject().setProperty("startapp_developer_id", jsonData.config.startapp.developer_id);
+                self.getProject().setProperty("startapp_app_id", jsonData.config.startapp.app_id);
 
-                PublishingKit_Demo_Android_Native.setProperty("adcolony_app_id", jsonData.config.adcolony.app_id);
-                PublishingKit_Demo_Android_Native.setProperty("adcolony_video_zone_id", jsonData.config.adcolony.video_zone_id);
-                PublishingKit_Demo_Android_Native.setProperty("adcolony_incentivised_video_zone_id", jsonData.config.adcolony.incentivised_video_zone_id);
+                self.getProject().setProperty("adcolony_app_id", jsonData.config.adcolony.app_id);
+                self.getProject().setProperty("adcolony_video_zone_id", jsonData.config.adcolony.video_zone_id);
+                self.getProject().setProperty("adcolony_incentivised_video_zone_id", jsonData.config.adcolony.incentivised_video_zone_id);
 
-                PublishingKit_Demo_Android_Native.setProperty("is_published_by_playscape", jsonData.config.published_by_playscape);
+                self.getProject().setProperty("is_published_by_playscape", jsonData.config.published_by_playscape);
 
                 // set property to determine that configuration was downloaded and should be updated
-                PublishingKit_Demo_Android_Native.setProperty("cofiguration_downloaded", "true");
+                self.getProject().setProperty("cofiguration_downloaded", "true");
                 } else {
                 if(jsonData.message) {
                 throw "Error!!! Could not retrieve configuration from the server. Message: " + jsonData.message;

@@ -27,6 +27,7 @@ public enum Action {
     DisplayBanner("Display Banner"),
     HideBanner("Hide Banner"),
     DisplayVideo("Display Video"),
+    DisplayVideoNonIncentivised("Display Video Non Incentivised"),
     EnableAds("Enable Ads"),
     DisableAds("Disable Ads"),
     RatingDialogShow("Rating Dialog Show"),
