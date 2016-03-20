@@ -1,0 +1,89 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+          url uri('../PlayscapePlugin/repo')
+        }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath   group: 'com.playscape.gradle',
+                    name: 'playscape',
+                    version: '1.0'
+    }
+}
+
+allprojects {
+	repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+      url uri('/../PlayscapePlugin/repo')
+    }
+	}
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    sourceSets {
+      main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDir 'libs'
+            jni.srcDirs = []
+      }
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        applicationId "com.playscape.publishingkit"
+        minSdkVersion 13
+        targetSdkVersion 20
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            /*proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'*/
+        }
+         debug {
+            debuggable true
+        }
+    }
+
+    dexOptions {
+      preDexLibraries = false
+      javaMaxHeapSize "4g"
+    }
+}
+
+dependencies {
+    compile ('com.android.support:multidex:1.+')
+    compile ('com.android.support:support-v4:23.+')
+    compile (project(':playscape')) {
+      /*exclude group: 'com.android.support', module: 'support-v4'*/
+    }
+    compile (project(':facebook')) {
+      /*exclude group: 'com.android.support', module: 'support-v4'*/
+    }
+}
+
+apply plugin: 'com.playscape.application'
+
+playscape {
+  sdkPath = "../PlayscapePubkitAndroid"
+  apiKey = "ty6sicWxV3PuijL6zEYnZJ40aHmixD68"
+}
