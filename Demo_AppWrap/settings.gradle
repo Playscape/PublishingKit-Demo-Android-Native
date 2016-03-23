@@ -1,0 +1,5 @@
+include 'playscape'
+project (':playscape').projectDir = new File('../PlayscapePubkitAndroid/libproject')
+
+include 'facebook'
+project (':facebook').projectDir = new File('../facebook')

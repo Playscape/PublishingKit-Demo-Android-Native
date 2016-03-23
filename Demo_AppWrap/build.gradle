@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
         jcenter()
         maven {
-          url uri('../PlayscapePlugin/repo')
+          url uri('../../../../out/gradle')
         }
     }
 
