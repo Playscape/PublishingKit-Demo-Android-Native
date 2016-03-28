@@ -86,4 +86,6 @@ apply plugin: 'com.playscape.application'
 playscape {
   sdkPath = "../PlayscapePubkitAndroid"
   apiKey = "ty6sicWxV3PuijL6zEYnZJ40aHmixD68"
+  enableAdMediation = true
+  enablePlayscapeExchange = true
 }
